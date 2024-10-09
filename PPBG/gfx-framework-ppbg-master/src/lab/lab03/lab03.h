@@ -25,5 +25,7 @@ namespace lab
 
         transform2D::LogicSpace logic_space;
         transform2D::ViewportSpace viewport_space;
+        transform2D::ViewportSpace viewport_spaces[];
+
     };
 }   // namespace lab

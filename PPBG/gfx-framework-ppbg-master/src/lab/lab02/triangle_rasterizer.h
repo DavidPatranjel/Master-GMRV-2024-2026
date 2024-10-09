@@ -38,5 +38,10 @@ namespace lab
              const VertexFormat &v1,
              const VertexFormat &v2,
              const VertexFormat &v3);
+         static glm::vec3 ComputeBarycentricCoords(
+             const glm::vec2& p,
+             const VertexFormat& v1,
+             const VertexFormat& v2,
+             const VertexFormat& v3);
     };
 }   // namespace lab

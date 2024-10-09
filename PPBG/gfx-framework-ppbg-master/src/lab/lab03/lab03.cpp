@@ -21,10 +21,17 @@ void Lab03::Initialize()
 
     logic_space = { 0, 0, 16.0f, 9.0f };
     viewport_space = { 0, 0, 1280, 720 };
-
+    viewport_spaces[0] = { 0, 360, 640, 360 };    // Top-left
+    viewport_spaces[1] = { 640, 360, 640, 360 };  // Top-right
+    viewport_spaces[2] = { 0, 0, 640, 360 };      // Bottom-left
+    viewport_spaces[3] = { 640, 0, 640, 360 };    // Bottom-right
+ 
     // TODO(student): Ex. 4
-
-    DrawShapes();
+    for (int vp = 0; vp < 4; vp++)
+    {
+        viewport_space = viewport_spaces[vp];
+        DrawShapes();
+    }
 }
 
 void Lab03::DrawShapes()
@@ -60,6 +67,7 @@ void Lab03::DrawShapes()
         glm::mat3 transformation = glm::mat4(1.0f);
         transformation *= viewPortTransformation;
         transformation *= transform2D::Translate(4, 6);
+        transformation *= transform2D::Scale(0.5f, 0.5f);
 
         Rasterize(vertices, indices, transformation);
     }
@@ -71,7 +79,7 @@ void Lab03::DrawShapes()
         glm::mat3 transformation = glm::mat4(1.0f);
         transformation *= viewPortTransformation;
         transformation *= transform2D::Translate(7, 6);
-
+        transformation *= transform2D::Scale(2.0f, 2.0f);
         Rasterize(vertices, indices, transformation);
     }
 
@@ -81,7 +89,7 @@ void Lab03::DrawShapes()
         glm::mat3 transformation = glm::mat4(1.0f);
         transformation *= viewPortTransformation;
         transformation *= transform2D::Translate(10, 6);
-
+        transformation *= transform2D::Rotate(0.785f);
         Rasterize(vertices, indices, transformation);
     }
 
@@ -93,7 +101,9 @@ void Lab03::DrawShapes()
         glm::mat3 transformation = glm::mat4(1.0f);
         transformation *= viewPortTransformation;
         transformation *= transform2D::Translate(13, 6);
-
+        transformation *= transform2D::Rotate(0.785f);
+        transformation *= transform2D::Scale(1.0f, 2.0f);
+        
         Rasterize(vertices, indices, transformation);
     }
 
@@ -112,7 +122,9 @@ void Lab03::DrawShapes()
         glm::mat3 transformation = glm::mat4(1.0f);
         transformation *= viewPortTransformation;
         transformation *= transform2D::Translate(4, 2);
-
+        transformation *= transform2D::Translate(0.5f, 0.5f);
+        transformation *= transform2D::Scale(0.5f, 0.5f);
+        transformation *= transform2D::Translate(-0.5f, -0.5f);
         Rasterize(vertices, indices, transformation);
     }
 
@@ -123,7 +135,9 @@ void Lab03::DrawShapes()
         glm::mat3 transformation = glm::mat4(1.0f);
         transformation *= viewPortTransformation;
         transformation *= transform2D::Translate(7, 2);
-
+        transformation *= transform2D::Translate(0.5f, 0.5f);
+        transformation *= transform2D::Scale(2.0f, 2.0f);
+        transformation *= transform2D::Translate(-0.5f, -0.5f);
         Rasterize(vertices, indices, transformation);
     }
 
@@ -133,7 +147,9 @@ void Lab03::DrawShapes()
         glm::mat3 transformation = glm::mat4(1.0f);
         transformation *= viewPortTransformation;
         transformation *= transform2D::Translate(10, 2);
-
+        transformation *= transform2D::Translate(0.5f, 0.5f);
+        transformation *= transform2D::Rotate(0.785f);
+        transformation *= transform2D::Translate(-0.5f, -0.5f);
         Rasterize(vertices, indices, transformation);
     }
 
@@ -145,7 +161,10 @@ void Lab03::DrawShapes()
         glm::mat3 transformation = glm::mat4(1.0f);
         transformation *= viewPortTransformation;
         transformation *= transform2D::Translate(13, 2);
-
+        transformation *= transform2D::Translate(0.5f, 0.5f);
+        transformation *= transform2D::Rotate(0.785f);
+        transformation *= transform2D::Scale(1.0f, 2.0f);
+        transformation *= transform2D::Translate(-0.5f, -0.5f);
         Rasterize(vertices, indices, transformation);
     }
 }
@@ -157,15 +176,15 @@ void Lab03::Rasterize(
 {
     for (int i = 0; i < indices.size(); i += 3) {
         auto v1 = vertices[indices[i]];
-        auto v2 = vertices[indices[i+1]];
-        auto v3 = vertices[indices[i+2]];
+        auto v2 = vertices[indices[i + 1]];
+        auto v3 = vertices[indices[i + 2]];
 
         glm::vec3 pos1 = transformation * glm::vec3(v1.position.x, v1.position.y, 1);
         v1.position = glm::vec3(pos1.x, pos1.y, v1.position.z);
-        
+
         glm::vec3 pos2 = transformation * glm::vec3(v2.position.x, v2.position.y, 1);
         v2.position = glm::vec3(pos2.x, pos2.y, v2.position.z);
-        
+
         glm::vec3 pos3 = transformation * glm::vec3(v3.position.x, v3.position.y, 1);
         v3.position = glm::vec3(pos3.x, pos3.y, v3.position.z);
 
@@ -205,7 +224,11 @@ void Lab03::OnInputUpdate(float deltaTime, int mods)
         image->Clear(glm::vec3(0));
         depthImage->Clear();
 
-        DrawShapes();
+        for (int vp = 0; vp < 4; vp++)
+        {
+            viewport_space = viewport_spaces[vp];
+            DrawShapes();
+        }
 
         image->UpdateInternalData();
         depthImage->UpdateInternalData();

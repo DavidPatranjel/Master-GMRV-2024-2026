@@ -136,6 +136,9 @@ glm::vec3 Lab04::ComputeClipSpacePosition(
         glm::vec4(position.x, position.y, position.z, 1);
 
     // TODO(student): Ex. 3
+    homogenous_coordinate.x = (float)homogenous_coordinate.x / homogenous_coordinate.w;
+    homogenous_coordinate.y = (float)homogenous_coordinate.y / homogenous_coordinate.w;
+    homogenous_coordinate.z = (float)homogenous_coordinate.z / homogenous_coordinate.w;
 
     glm::vec3 clip_space_pos = glm::vec3(homogenous_coordinate);
 
@@ -176,8 +179,10 @@ TRIANGLE_FACE Lab04::DetermineTriangleFace(
     // of the cross product as follows:
     // If the sign is positive, the front face of the triangle is displayed.
     // If the sign is negative, the back face of the triangle is displayed.
+    if(cross_produt.z < 0)
+        return TRIANGLE_FACE::BACK;
+    return TRIANGLE_FACE::FRONT;
 
-    return TRIANGLE_FACE::NONE;
 }
 
 void Lab04::OnInputUpdate(float deltaTime, int mods)
