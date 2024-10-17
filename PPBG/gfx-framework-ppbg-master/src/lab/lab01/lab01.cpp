@@ -23,6 +23,7 @@ void Lab01::Initialize()
     Exercise4();
     Exercise5();
     Exercise6();
+    Bonus();
 }
 
 void Lab01::Exercise1()
@@ -225,6 +226,27 @@ void Lab01::Exercise6()
             else
                 RenderPoint(check_point, glm::vec3(1, 0, 0), "out");
         }
+    }
+}
+
+void Lab01::Bonus()
+{
+    SetExercise();
+
+    //TODO(student): Ex. 4
+    {
+        SetPanel("4", { -3, -2, 100 }, { 0, 0, 1280, 720 });
+
+        glm::vec2 v1(4, 1.5);
+        glm::vec2 v2(2, 3);
+        float dot12 = glm::dot(v1, v2);
+        float angle12 = glm::acos(dot12 / (glm::length(v1) * glm::length(v2)));
+        float angleStart = glm::atan(v1.y / v1.x);
+        RenderVector(v1, glm::vec3(1, 0, 0), "v1");
+        RenderVector(v2, glm::vec3(0, 1, 0), "v2");
+        RenderArc(angleStart, angle12, glm::vec3(0, 0, 1));
+        RenderArc(angleStart + angle12, 2 * glm::pi<float>() - angle12, glm::vec3(0), 1.0f);
+
     }
 }
 

@@ -76,14 +76,24 @@ void Lab05::Init()
 void Lab05::CreateMesh(const char *name, const std::vector<VertexFormat> &vertices, const std::vector<unsigned int> &indices)
 {
     unsigned int VAO = 0;
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
     // TODO(student): Create the VAO and bind it
 
     unsigned int VBO = 0;
     // TODO(student): Create the VBO and bind it
+    glGenBuffers(1, &VBO);	// se genereaza ID-ul (numele) bufferului
+    glDeleteBuffers(1, &VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices[0]) * vertices.size(), &vertices[0], GL_STATIC_DRAW);
 
     // TODO(student): Send vertices data into the VBO buffer
 
     unsigned int IBO = 0;
+    glGenBuffers(1, &IBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices[0]) * indices.size(), &indices[0], GL_STATIC_DRAW);
+
     // TODO(student): Create the IBO and bind it
 
     // TODO(student): Send indices data into the IBO buffer
@@ -141,7 +151,8 @@ void Lab05::Update(float deltaTimeSeconds)
 
     // Clears the color buffer (using the previously set color) and depth buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+    
+    glClearColor(color.x, color.y, color.z, 1);
     static auto camera = new gfxc::Camera();
 
     // TODO(student): Draw the objects 4 times in different viewports.
@@ -177,14 +188,15 @@ void Lab05::DrawObjects(gfxc::Camera *camera, const transform2D::ViewportSpace &
     );
 
     // TODO(student): Enable face culling
-
+    glEnable(GL_CULL_FACE);
     // TODO(student): Set face custom culling. Use the `cullFace` variable.
+    glCullFace(cullFace);
 
     // TODO(student): Set the position and size of the view port based on the
     // information received from the 'viewport_space' parameter.
 
     glm::mat4 model = glm::mat4(1);
-    model *= transform3D::Translate(glm::vec3(-1.5f, 0.5f, 0));
+    model *= transform3D::Translate(glm::vec3(-1.5f, 0.5f + cube_1_posY, 0));
     model *= transform3D::RotateOX(glm::radians(45.0f));
     model *= transform3D::RotateOZ(glm::radians(-45.0f));
     model *= transform3D::Scale(glm::vec3(0.75f));
@@ -192,6 +204,7 @@ void Lab05::DrawObjects(gfxc::Camera *camera, const transform2D::ViewportSpace &
 
     model = glm::mat4(1);
     model *= transform3D::Translate(glm::vec3(0, 0.5f, 0));
+    model *= transform3D::RotateOX(cube_2_angle);
     model *= transform3D::Scale(glm::vec3(0.75f));
     RenderMesh(meshes["cube"], shaders["VertexColor"], model, view, projection);
 
@@ -199,9 +212,14 @@ void Lab05::DrawObjects(gfxc::Camera *camera, const transform2D::ViewportSpace &
     model *= transform3D::Translate(glm::vec3(1.5f, 0.5f, 0));
     model *= transform3D::RotateOX(glm::radians(45.0f));
     model *= transform3D::RotateOZ(glm::radians(45.0f));
-    model *= transform3D::Scale(glm::vec3(0.5f));
+    model *= transform3D::Scale(glm::vec3(cube_3_scale));
     RenderMesh(meshes["cube"], shaders["VertexColor"], model, view, projection);
 
+
+    model = glm::mat4(1);
+    model *= transform3D::Translate(glm::vec3(0, 1, 1.5f) + my_cube_movement);
+    model *= transform3D::Scale(glm::vec3(0.25f));
+    RenderMesh(meshes["cube"], shaders["VertexColor"], model, view, projection);
     // TODO(student): Disable face culling
 
     DrawCoordinateSystem(view, projection);
@@ -251,14 +269,61 @@ void Lab05::OnInputUpdate(float deltaTime, int mods)
     // Don't change the position of the object when the position
     // of the camera in the scene changes.
 
+    if (!window->MouseHold(GLFW_MOUSE_BUTTON_2))
+    {
+        //cout << cube_1_posY << " " << is_cube_1_up << " ";
+        /// CUBE 1 TRANSLATE [0, 3]
+        if (is_cube_1_up)
+        {
+            cube_1_posY += ANIMATION_SPEED;
+            if(cube_1_posY >= 3.0f) is_cube_1_up = false;
+        }
+        else
+        {
+            cube_1_posY -= ANIMATION_SPEED;
+            if(cube_1_posY < 0.0f ) is_cube_1_up = true;
+        }
+
+        /// CUBE 2 ROTATE
+        cube_2_angle += ANIMATION_SPEED;
+        if (cube_2_angle >= 2 * glm::pi<float>()) cube_2_angle = 0.0f;
+
+        /// CUBE 3 SCALE [0.5, 2]
+        if (is_cube_3_scaling_up)
+        {
+            cube_3_scale += ANIMATION_SPEED;
+            if (cube_3_scale >= 2.0f) is_cube_3_scaling_up = false;
+        }
+        else
+        {
+            cube_3_scale -= ANIMATION_SPEED;
+            if (cube_3_scale < 0.5f) is_cube_3_scaling_up = true;
+        }
+
+        /// MY CUBE MOVEMENT
+        if (window->KeyHold(GLFW_KEY_W)) my_cube_movement.z -= ANIMATION_SPEED;
+        if (window->KeyHold(GLFW_KEY_S))my_cube_movement.z += ANIMATION_SPEED;
+        if (window->KeyHold(GLFW_KEY_A))my_cube_movement.x -= ANIMATION_SPEED;
+        if (window->KeyHold(GLFW_KEY_D))my_cube_movement.x += ANIMATION_SPEED;
+        if (window->KeyHold(GLFW_KEY_Q))my_cube_movement.y += ANIMATION_SPEED;
+        if (window->KeyHold(GLFW_KEY_E))my_cube_movement.y -= ANIMATION_SPEED;
+
+    }
+
 }
 
 
 void Lab05::OnKeyPress(int key, int mods)
 {
-    if (key == GLFW_KEY_R) {
-        // TODO(student): Change the values of the color components.
+    if (key == GLFW_KEY_R){
+        color.x = static_cast<double>(rand()) / RAND_MAX;
+        color.y = static_cast<double>(rand()) / RAND_MAX;
+        color.z = static_cast<double>(rand()) / RAND_MAX;
+        cout << "COLOUR RAND" << color;
+    }
 
+    if (key == GLFW_KEY_F) {
+        cullFace = cullFace == GL_FRONT ? GL_BACK : GL_FRONT;
     }
 
     // TODO(student): Switch between GL_FRONT and GL_BACK culling.

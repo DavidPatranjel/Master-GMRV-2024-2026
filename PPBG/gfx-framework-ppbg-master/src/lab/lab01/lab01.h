@@ -19,6 +19,7 @@ namespace lab
          void Exercise4();
          void Exercise5();
          void Exercise6();
+         void Bonus();
      private:
         void PrintTextArea(const glm::vec2& p1, const glm::vec2& p2, const  glm::vec2& p3);
         float ComputeArea(const glm::vec2& p1, const glm::vec2& p2, const  glm::vec2& p3);

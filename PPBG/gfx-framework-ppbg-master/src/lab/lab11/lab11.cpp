@@ -90,7 +90,7 @@ void Lab11::Update(float deltaTimeSeconds)
 
 void Lab11::FrameEnd()
 {
-#if 0
+#if 1
     DrawCoordinateSystem();
 #endif
 }

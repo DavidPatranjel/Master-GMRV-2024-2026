@@ -40,5 +40,15 @@ namespace lab
         transform2D::ViewportSpace viewport_space;
         glm::vec3 color;
         GLenum cullFace;
+
+    private:
+        float  cube_1_posY = 0.0f;
+        bool is_cube_1_up = true;
+        float cube_2_angle = 0.0f;
+        float  cube_3_scale= 0.5f;
+        bool is_cube_3_scaling_up = true;
+        glm::vec3 my_cube_movement = glm::vec3(0);
+        const float ANIMATION_SPEED = 0.02f;
+
     };
 }   // namespace lab

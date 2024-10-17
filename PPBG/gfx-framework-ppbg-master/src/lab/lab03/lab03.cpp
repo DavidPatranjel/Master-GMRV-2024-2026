@@ -14,6 +14,27 @@ Lab03::~Lab03()
 {
 }
 
+//void Lab03::Initialize()
+//{
+//    image->Init(1280, 720, 3 /* channels */);
+//    depthImage->Init(1280, 720);
+//
+//    logic_space = { 0, 0, 16.0f, 9.0f };
+//    viewport_space = { 0, 0, 1280, 720 };
+//    viewport_spaces[0] = { 0, 360, 640, 360 };    // Top-left
+//    viewport_spaces[1] = { 640, 360, 640, 360 };  // Top-right
+//    viewport_spaces[2] = { 0, 0, 640, 360 };      // Bottom-left
+//    viewport_spaces[3] = { 640, 0, 640, 360 };    // Bottom-right
+// 
+//    // TODO(student): Ex. 4
+//    for (int vp = 0; vp < 4; vp++)
+//    {
+//        viewport_space = viewport_spaces[vp];
+//        DrawShapes();
+//    }
+//}
+
+// bonus
 void Lab03::Initialize()
 {
     image->Init(1280, 720, 3 /* channels */);
@@ -21,17 +42,72 @@ void Lab03::Initialize()
 
     logic_space = { 0, 0, 16.0f, 9.0f };
     viewport_space = { 0, 0, 1280, 720 };
-    viewport_spaces[0] = { 0, 360, 640, 360 };    // Top-left
-    viewport_spaces[1] = { 640, 360, 640, 360 };  // Top-right
-    viewport_spaces[2] = { 0, 0, 640, 360 };      // Bottom-left
-    viewport_spaces[3] = { 640, 0, 640, 360 };    // Bottom-right
- 
-    // TODO(student): Ex. 4
-    for (int vp = 0; vp < 4; vp++)
+
+   
+    DrawShapes2();
+}
+
+void Lab03::DrawShapes2()
+{
+    vector<VertexFormat> vertices
     {
-        viewport_space = viewport_spaces[vp];
-        DrawShapes();
+        VertexFormat(glm::vec3(0, 0,  0.5), glm::vec3(1, 0, 0)),
+        VertexFormat(glm::vec3(1, 0,  0.5), glm::vec3(1, 0, 0)),
+        VertexFormat(glm::vec3(0.5, 2,  0.5), glm::vec3(1, 1, 0))
+    };
+
+    vector<unsigned int> indices
+    {
+        0, 1, 2,    // triangle
+    };
+
+    glm::mat3 viewPortTransformation = transform2D::Viewport(logic_space, viewport_space);
+
+    {
+        glm::mat3 transformation = glm::mat3(1.0f);
+        transformation *= viewPortTransformation;
+        transformation *= transform2D::Translate(5, 5);
+
+        Rasterize(vertices, indices, transformation);
     }
+
+    {
+        glm::mat3 transformation = glm::mat3(1.0f);
+        transformation *= viewPortTransformation;
+        transformation *= transform2D::Translate(6, 5);
+        transformation *= transform2D::Rotate(-1.256f);
+
+        Rasterize(vertices, indices, transformation);
+    }
+
+    {
+        glm::mat3 transformation = glm::mat3(1.0f);
+        transformation *= viewPortTransformation;
+        transformation *= transform2D::Translate(5 - cos(1.256), 5 - sin(1.256));
+        transformation *= transform2D::Rotate(1.256f);
+
+        Rasterize(vertices, indices, transformation);
+    }
+
+    {
+        glm::mat3 transformation = glm::mat3(1.0f);
+        transformation *= viewPortTransformation;
+        transformation *= transform2D::Translate(6 + cos(1.256), 5 - sin(1.256));
+        transformation *= transform2D::Rotate(-2 * 1.256f);
+
+        Rasterize(vertices, indices, transformation);
+    }
+
+    {
+        glm::mat3 transformation = glm::mat3(1.0f);
+        transformation *= viewPortTransformation;
+        transformation *= transform2D::Translate(cos(0.628), -sin(0.628));
+        transformation *= transform2D::Translate(5 - cos(1.256), 5 - sin(1.256));
+        transformation *= transform2D::Rotate(2 * 1.256f);
+
+        Rasterize(vertices, indices, transformation);
+    }
+
 }
 
 void Lab03::DrawShapes()
@@ -224,11 +300,12 @@ void Lab03::OnInputUpdate(float deltaTime, int mods)
         image->Clear(glm::vec3(0));
         depthImage->Clear();
 
-        for (int vp = 0; vp < 4; vp++)
+       /* for (int vp = 0; vp < 4; vp++)
         {
             viewport_space = viewport_spaces[vp];
             DrawShapes();
-        }
+        }*/
+        DrawShapes2();
 
         image->UpdateInternalData();
         depthImage->UpdateInternalData();

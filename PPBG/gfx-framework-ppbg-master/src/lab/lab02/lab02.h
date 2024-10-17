@@ -19,5 +19,6 @@ namespace lab
         void Rasterize(
             const std::vector<VertexFormat> &vertices,
             const std::vector<unsigned int> &indices);
+        glm::vec3 ComputePolarCoords3D(float aplha, float r, glm::vec2 p0);
     };
 }   // namespace lab

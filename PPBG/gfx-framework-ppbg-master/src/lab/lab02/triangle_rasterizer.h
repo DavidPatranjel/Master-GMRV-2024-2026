@@ -43,5 +43,11 @@ namespace lab
              const VertexFormat& v1,
              const VertexFormat& v2,
              const VertexFormat& v3);
+         static float ComputeDet(
+             const glm::vec2& v1,
+             const glm::vec2& v2,
+             const glm::vec2& v3);
+         static glm::vec2 GetXY(glm::vec3 p);
+
     };
 }   // namespace lab
