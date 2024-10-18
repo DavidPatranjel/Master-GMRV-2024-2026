@@ -15,7 +15,8 @@ Master Grafica Multimedia si Realitate Virtuala ACS-UNSTPB 2024-2026
 * SEMESTRUL 2
   - Conceptia jocurilor video (CJV)
   - Algoritmi pentru logica jocurilor video (ALJV)
-  - 
+  - Vizualizarea datelor volumetrice și animație pe calculator (VDVAC)
+  - Prelucrarea imaginilor si a sunetului (PIS)
   - Cercetare științifică 2 (CS2)
   - Psihopedagogia adolescenţilor, tinerilor şi adulţilor (PATA)
   - Consiliere şi orientare (CO)
