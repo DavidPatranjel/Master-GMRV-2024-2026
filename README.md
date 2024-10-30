@@ -6,8 +6,8 @@ Master Grafica Multimedia si Realitate Virtuala ACS-UNSTPB 2024-2026
 
 #### I. ANUL 1
 * SEMESTRUL 1
-  - [Programarea avansata a jocurilor video (PAJV)](https://github.com/DavidPatranjel/Master-GMRV-2024-2026/tree/main/PAJV)
-  - Modelare 3D (M3D)
+  - [Programarea avansata a jocurilor video (PAJV)](https://github.com/DavidPatranjel/Games-PAJV/tree/main)
+  - [Modelare 3D (M3D)](https://github.com/DavidPatranjel/Master-GMRV-2024-2026/tree/main/M3D)
   - [Introducere în realitatea virtuală (IRV)](https://github.com/DavidPatranjel/IRVA)
   - [Programarea prelucrărilor în bandă grafică (PPBG)](https://github.com/DavidPatranjel/Master-GMRV-2024-2026/tree/main/PPBG)
   - Cercetare științifică 1 (CS1)
