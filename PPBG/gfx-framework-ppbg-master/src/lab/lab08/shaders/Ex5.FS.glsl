@@ -7,6 +7,7 @@ in vec2 texture_coord;
 uniform sampler2D texture_1;
 uniform sampler2D texture_2;
 // TODO(student): Declare various other uniforms
+uniform float Time;
 
 // Output
 layout(location = 0) out vec4 out_color;
@@ -14,12 +15,10 @@ layout(location = 0) out vec4 out_color;
 
 void main()
 {
-    // TODO(student): Calculate the out_color using the texture() function.
+    vec2 new_text_coord = texture_coord;
+    new_text_coord.x = mod(Time * 0.01f, 1.0f);
+    vec4 color = texture2D(texture_1, new_text_coord);
 
-    // TODO(student): Use the "discard" directive to terminate execution
-    // based on the value of the alpha channel
-    vec4 color = texture2D(texture_1, texture_coord);
- 
     if(color.a < 0.4) {
         discard;
     }

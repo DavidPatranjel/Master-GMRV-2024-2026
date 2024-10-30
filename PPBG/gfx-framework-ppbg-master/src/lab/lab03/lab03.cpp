@@ -21,10 +21,10 @@ Lab03::~Lab03()
 //
 //    logic_space = { 0, 0, 16.0f, 9.0f };
 //    viewport_space = { 0, 0, 1280, 720 };
-//    viewport_spaces[0] = { 0, 360, 640, 360 };    // Top-left
-//    viewport_spaces[1] = { 640, 360, 640, 360 };  // Top-right
-//    viewport_spaces[2] = { 0, 0, 640, 360 };      // Bottom-left
-//    viewport_spaces[3] = { 640, 0, 640, 360 };    // Bottom-right
+//    viewport_spaces[0] = { 0, 360, 640, 360 };    
+//    viewport_spaces[1] = { 640, 360, 640, 360 }; 
+//    viewport_spaces[2] = { 0, 0, 640, 360 };      
+//    viewport_spaces[3] = { 640, 0, 640, 360 };   
 // 
 //    // TODO(student): Ex. 4
 //    for (int vp = 0; vp < 4; vp++)
@@ -300,7 +300,7 @@ void Lab03::OnInputUpdate(float deltaTime, int mods)
         image->Clear(glm::vec3(0));
         depthImage->Clear();
 
-       /* for (int vp = 0; vp < 4; vp++)
+        /*for (int vp = 0; vp < 4; vp++)
         {
             viewport_space = viewport_spaces[vp];
             DrawShapes();

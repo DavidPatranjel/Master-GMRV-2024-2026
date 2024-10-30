@@ -89,6 +89,9 @@ void Lab07::Init()
             );
         }
     }
+
+    angleOX = 0;
+    angleOZ = 0;
 }
 
 void Lab07::FrameStart()
@@ -200,16 +203,47 @@ void Lab07::RenderSimpleMesh(Mesh *mesh, Shader *shader, const glm::mat4 & model
     // sources, directions of the spot light sources and angles for the
     // spot light sources) in attributes of uniform type. Use the attributes
     // defined in "lab07.h". Send 10 entities of each.
+    /*glm::vec3 point_light_positions[10];
+    glm::vec3 spot_light_positions[10];
+    glm::vec3 spot_light_directions[10];
+    glm::vec3 point_light_colors[10];
+    glm::vec3 spot_light_colors[10];
+    float spot_light_angles[10];
 
-    glm::vec3 eye_position = GetSceneCamera()->m_transform->GetWorldPosition();
+    int controlled_light_source_index;
+    glm::vec3 controlled_light_position;
+    float angle;*/
+    GLint plightpos = glGetUniformLocation(shader->program, "point_light_positions");
+    glUniform3fv(plightpos, 10, glm::value_ptr(point_light_positions[0]));
+    GLint slightpos = glGetUniformLocation(shader->program, "spot_light_positions");
+    glUniform3fv(slightpos, 10, glm::value_ptr(spot_light_positions[0]));
+    GLint slightdir = glGetUniformLocation(shader->program, "spot_light_directions");
+    glUniform3fv(slightdir, 10, glm::value_ptr(spot_light_directions[0]));
+    GLint plightcol = glGetUniformLocation(shader->program, "point_light_colors");
+    glUniform3fv(plightcol, 10, glm::value_ptr(point_light_colors[0]));
+    GLint slightcol = glGetUniformLocation(shader->program, "spot_light_colors");
+    glUniform3fv(slightcol, 10, glm::value_ptr(spot_light_colors[0]));
+    GLint slightangle = glGetUniformLocation(shader->program, "spot_light_angles");
+    glUniform1fv(slightangle, 10, spot_light_angles);
+
     // TODO(student): Set eye position (camera position) uniform
+    glm::vec3 eye_position = GetSceneCamera()->m_transform->GetWorldPosition();
+    GLint eyepos = glGetUniformLocation(shader->program, "eye_position");
+    glUniform3f(eyepos, eye_position.x, eye_position.y, eye_position.z);
 
     glm::vec3 material_ka = object_color;
     glm::vec3 material_kd = object_color;
     glm::vec3 material_ks = object_color;
     int material_shininess = 30;
     // TODO(student): Set material property uniforms (shininess, ka, kd, ks)
-
+    GLint kapos = glGetUniformLocation(shader->program, "material_ka");
+    glUniform3f(kapos, material_ka.x, material_ka.y, material_ka.z);
+    GLint kdpos = glGetUniformLocation(shader->program, "material_kd");
+    glUniform3f(kdpos, material_kd.x, material_kd.y, material_kd.z);
+    GLint kspos = glGetUniformLocation(shader->program, "material_ks");
+    glUniform3f(kspos, material_ks.x, material_ks.y, material_ks.z);
+    GLint shpos = glGetUniformLocation(shader->program, "material_shininess");
+    glUniform1i(shpos, material_shininess);
     // Send the model matrix uniform
     GLint loc_model_matrix = glGetUniformLocation(shader->program, "Model");
     glUniformMatrix4fv(loc_model_matrix, 1, GL_FALSE, glm::value_ptr(model));
@@ -267,8 +301,24 @@ void Lab07::OnInputUpdate(float deltaTime, int mods)
     }
 
     {
-        glm::vec3 &light_direction = spot_light_directions[9];
-        float &angle = spot_light_angles[9];
+        if (window->KeyHold(GLFW_KEY_P)) spot_light_angles[9] += 0.1f * deltaTime;
+        if (window->KeyHold(GLFW_KEY_O)) spot_light_angles[9] -= 0.1f * deltaTime;
+        if (window->KeyHold(GLFW_KEY_X))
+        {
+            angleOX += glm::radians(2.0f) * deltaTime;
+            glm::mat4 rotOX = glm::rotate(glm::mat4(1.0f), angleOX, glm::vec3(1.0f, 0.0f, 0.0f));
+            glm::vec4 dir = glm::vec4(spot_light_directions[9], 0.0f);
+            glm::vec4 new_dir = rotOX * dir;
+            spot_light_directions[9] = glm::normalize(glm::vec3(new_dir));
+        }
+        if (window->KeyHold(GLFW_KEY_Z))
+        {
+            angleOZ += glm::radians(2.0f) * deltaTime;
+            glm::mat4 rotOZ = glm::rotate(glm::mat4(1.0f), angleOZ, glm::vec3(0.0f, 0.0f, 1.0f));
+            glm::vec4 dir = glm::vec4(spot_light_directions[9], 0.0f);
+            glm::vec4 new_dir = rotOZ * dir;
+            spot_light_directions[9] = glm::normalize(glm::vec3(new_dir));
+        }
         // TODO(student): Change the lighting direction and angle of the spot
         // light source from the keyboard. From the keys, implement the possibility
         // of rotating the lighting direction relative to the OX and OZ axes, in both

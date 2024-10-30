@@ -92,10 +92,10 @@ void Lab08::Init()
         vector<glm::vec2> textureCoords
         {
             // TODO(student): Specify the texture coordinates for the square
-            glm::vec2(0.0f, 0.0f),  // top right
-            glm::vec2(0.0f, 0.0f),  // bottom right
-            glm::vec2(0.0f, 0.0f),  // bottom left
-            glm::vec2(0.0f, 0.0f)   // top left
+            glm::vec2(1.0f, 0.0f),  // Top right
+            glm::vec2(1.0f, 1.0f),  // Bottom right
+            glm::vec2(0.0f, 1.0f),  // Bottom left
+            glm::vec2(0.0f, 0.0f)   // Top left
         };
 
         vector<VertexFormat> vertices
@@ -119,6 +119,8 @@ void Lab08::Init()
 
     // TODO(student): Load other shaders
     LoadShader("LabShader");
+    LoadShader("Ex3");
+    LoadShader("Ex4");
 }
 
 Texture2D* Lab08::LoadTexture(const char* imagePath)
@@ -132,8 +134,10 @@ Texture2D* Lab08::LoadTexture(const char* imagePath)
 Texture2D *Lab08::CreateTexture(unsigned int width, unsigned int height,
     unsigned int channels, unsigned char* data)
 {
-    GLuint textureID = 0;
+    GLuint textureID;
     unsigned int size = width * height * channels;
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_2D, textureID);
 
     // TODO(student): Generate and bind the new texture ID
 
@@ -141,6 +145,8 @@ Texture2D *Lab08::CreateTexture(unsigned int width, unsigned int height,
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 4);
     }
     // TODO(student): Set the texture parameters (MIN_FILTER and MAG_FILTER) using glTexParameteri
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
 
     glPixelStorei(GL_PACK_ALIGNMENT, 1);
     CheckOpenGLError();
@@ -153,8 +159,27 @@ Texture2D *Lab08::CreateTexture(unsigned int width, unsigned int height,
     //   - 2 color channels - GL_RG
     //   - 3 color channels - GL_RGB
     //   - 4 color channels - GL_RGBA
+    switch (channels)
+    {
+    case 1:
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, data);
+        break;
+    case 2:
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RG, width, height, 0, GL_RG, GL_UNSIGNED_BYTE, data);
+        break;
+    case 3:
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        break;
+    case 4:
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        break;
+    default:
+        break;
+    }
+  
 
     // TODO(student): Generate texture mip-maps
+    glGenerateMipmap(GL_TEXTURE_2D);
 
     CheckOpenGLError();
 
@@ -177,7 +202,22 @@ Texture2D *Lab08::CreateStripedTexture()
     // TODO(student): Generate the information for a striped image,
     // where all the pixels on the same line have the same color.
     // The color of the pixels of a line is chosen randomly.
+    std::srand(std::time(0));
 
+    for (int y = 0; y < height; ++y)
+    {
+        unsigned char r = std::rand() % 256;
+        unsigned char g = std::rand() % 256;
+        unsigned char b = std::rand() % 256;
+
+        for (int x = 0; x < width; ++x)
+        {
+            int index = (y * width + x) * channels;
+            data[index] = r;      // Red channel
+            data[index + 1] = g;  // Green channel
+            data[index + 2] = b;  // Blue channel
+        }
+    }
 
     return CreateTexture(width, height, channels, data);
 }
@@ -200,7 +240,7 @@ void Lab08::Update(float deltaTimeSeconds)
         glm::mat4 modelMatrix = glm::mat4(1);
         modelMatrix = glm::translate(modelMatrix, glm::vec3(1, 1, -3));
         modelMatrix = glm::scale(modelMatrix, glm::vec3(2));
-        RenderSimpleMesh(meshes["sphere"], shaders["LabShader"], modelMatrix, mapTextures["earth"]);
+        RenderSimpleMesh(meshes["sphere"], shaders["Ex4"], modelMatrix, mapTextures["earth"]);
     }
 
     {
@@ -208,7 +248,7 @@ void Lab08::Update(float deltaTimeSeconds)
         modelMatrix = glm::translate(modelMatrix, glm::vec3(2, 0.5f, 0));
         modelMatrix = glm::rotate(modelMatrix, RADIANS(60.0f), glm::vec3(1, 0, 0));
         modelMatrix = glm::scale(modelMatrix, glm::vec3(0.75f));
-        RenderSimpleMesh(meshes["box"], shaders["LabShader"], modelMatrix, mapTextures["crate"], mapTextures["striped"]);
+        RenderSimpleMesh(meshes["box"], shaders["Ex3"], modelMatrix, mapTextures["crate"], mapTextures["striped"]);
     }
 
     {
@@ -271,22 +311,31 @@ void Lab08::RenderSimpleMesh(Mesh *mesh, Shader *shader, const glm::mat4 &modelM
     glUniformMatrix4fv(loc_projection_matrix, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 
     // TODO(student): Set any other shader uniforms that you need
-
+    GLint timeLoc = glGetUniformLocation(shader->program, "Time");
+    float elapsedTime = Engine::GetElapsedTime();
+    glUniform1f(timeLoc, elapsedTime);
     if (texture1)
     {
         // TODO(student): Do these:
         // - activate texture location 0
         // - bind the texture1 ID
         // - send theuniform value
+        glActiveTexture(GL_TEXTURE0);
 
+        glBindTexture(GL_TEXTURE_2D, texture1->GetTextureID());
+
+        glUniform1i(glGetUniformLocation(shader->program, "texture_1"), 0);
     }
 
     if (texture2)
     {
         // TODO(student): Do these:
         // - activate texture location 1
+        glActiveTexture(GL_TEXTURE1);
         // - bind the texture2 ID
+        glBindTexture(GL_TEXTURE_2D, texture2->GetTextureID());
         // - send the uniform value
+        glUniform1i(glGetUniformLocation(shader->program, "texture_2"), 1);
 
     }
 

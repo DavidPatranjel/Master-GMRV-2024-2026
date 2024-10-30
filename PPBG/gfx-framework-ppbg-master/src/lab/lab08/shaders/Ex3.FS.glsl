@@ -18,8 +18,10 @@ void main()
 
     // TODO(student): Use the "discard" directive to terminate execution
     // based on the value of the alpha channel
-    vec4 color = texture2D(texture_1, texture_coord);
- 
+    vec4 color1 = texture2D(texture_1, texture_coord);
+    vec4 color2 = texture2D(texture_2, texture_coord);
+    vec4 color = mix(color1, color2, 0.5f);
+
     if(color.a < 0.4) {
         discard;
     }

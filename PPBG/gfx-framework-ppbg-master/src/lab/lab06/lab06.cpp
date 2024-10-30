@@ -80,7 +80,7 @@ void Lab06::Init()
 
 void Lab06::CreateShader(const char* name, const char* vertex_shader_path, const char* fragment_shader_path)
 {
-    unsigned int vertex_shader_id = 0;
+    unsigned int vertex_shader_id = glCreateShader(GL_VERTEX_SHADER);
     // TODO(student): Create and compile the vertex shader object
 
     const char *vertex_shader_source = GetShaderContent(vertex_shader_path);
@@ -91,7 +91,7 @@ void Lab06::CreateShader(const char* name, const char* vertex_shader_path, const
 
     CheckShaderCompilationError(vertex_shader_id);
 
-    unsigned int fragment_shader_id = 0;
+    unsigned int fragment_shader_id = glCreateShader(GL_FRAGMENT_SHADER);
     // TODO(student): Create and compile the fragment shader object
 
     const char *fragment_shader_source = GetShaderContent(fragment_shader_path);
@@ -127,6 +127,8 @@ Mesh *Lab06::CreateMesh(const char *name, const std::vector<VertexFormat> &verti
     // Create the VBO and bind it
     unsigned int VBO;
     glGenBuffers(1, &VBO);
+    glDeleteBuffers(1, &VBO);
+
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
     // Send vertices data into the VBO buffer
@@ -217,7 +219,7 @@ void Lab06::Update(float deltaTimeSeconds)
         glm::mat4 model = glm::mat4(1);
         model *= transform3D::Translate(glm::vec3(2, 0.5f, 0));
         model *= transform3D::RotateOX(glm::radians(60.0f));
-        RenderMesh(meshes["cube"], shaders["LabShader"], model, GetSceneCamera(), viewport_space);
+        RenderMesh(meshes["cube"], shaders["LastTask"], model, GetSceneCamera(), viewport_space);
     }
 }
 

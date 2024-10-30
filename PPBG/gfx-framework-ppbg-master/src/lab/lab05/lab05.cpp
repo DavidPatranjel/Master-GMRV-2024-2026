@@ -26,6 +26,7 @@ Lab05::Lab05()
 
 Lab05::~Lab05()
 {
+
 }
 
 
@@ -86,7 +87,6 @@ void Lab05::CreateMesh(const char *name, const std::vector<VertexFormat> &vertic
     glDeleteBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices[0]) * vertices.size(), &vertices[0], GL_STATIC_DRAW);
-
     // TODO(student): Send vertices data into the VBO buffer
 
     unsigned int IBO = 0;
@@ -123,6 +123,7 @@ void Lab05::CreateMesh(const char *name, const std::vector<VertexFormat> &vertic
     // ========================================================================
 
     // TODO(student): Unbind the VAO
+    glDeleteBuffers(1, &VAO);
 
     // Check for OpenGL errors
     if (GetOpenGLError() == GL_INVALID_OPERATION)
@@ -158,14 +159,23 @@ void Lab05::Update(float deltaTimeSeconds)
     // TODO(student): Draw the objects 4 times in different viewports.
     // Send the 4 cameras with predefined viewing positions and directions to the drawing.
 
-    viewport_space = transform2D::ViewportSpace(0, 0, resolution.x, resolution.y);
-    DrawObjects(GetSceneCamera(), viewport_space);
+    //viewport_space = transform2D::ViewportSpace(0, 0, resolution.x, resolution.y);
+    transform2D::ViewportSpace vp1(0, resolution.y/2, 3 * resolution.x / 4, resolution.y / 2);
+    transform2D::ViewportSpace vp2(0, 0, 3 * resolution.x / 4, resolution.y / 2);
+    transform2D::ViewportSpace vp3(3 * resolution.x / 4, 3 * resolution.y / 4, resolution.x / 4, resolution.y / 4);
+    transform2D::ViewportSpace vp4(3 * resolution.x / 4, 0, resolution.x / 4, 3 * resolution.y / 4);
+    DrawObjects(GetSceneCamera(), vp2);
+
 
     camera->SetPositionAndRotation(glm::vec3(0, 3, -3), glm::quatLookAt(glm::normalize(glm::vec3(0, -3, 3)), glm::vec3(0, 1, 0)));
+    DrawObjects(camera, vp4);
 
     camera->SetPositionAndRotation(glm::vec3(3, 3, 3), glm::quatLookAt(glm::normalize(glm::vec3(-3, -3, -3)), glm::vec3(0, 1, 0)));
+    DrawObjects(camera, vp1);
 
     camera->SetPositionAndRotation(glm::vec3(-3, 3, 3), glm::quatLookAt(glm::normalize(glm::vec3(3, -3, -3)), glm::vec3(0, 1, 0)));
+    DrawObjects(camera, vp3);
+
 }
 
 
@@ -194,6 +204,7 @@ void Lab05::DrawObjects(gfxc::Camera *camera, const transform2D::ViewportSpace &
 
     // TODO(student): Set the position and size of the view port based on the
     // information received from the 'viewport_space' parameter.
+    glViewport(viewport_space.x, viewport_space.y, viewport_space.width, viewport_space.height);
 
     glm::mat4 model = glm::mat4(1);
     model *= transform3D::Translate(glm::vec3(-1.5f, 0.5f + cube_1_posY, 0));
@@ -219,9 +230,10 @@ void Lab05::DrawObjects(gfxc::Camera *camera, const transform2D::ViewportSpace &
     model = glm::mat4(1);
     model *= transform3D::Translate(glm::vec3(0, 1, 1.5f) + my_cube_movement);
     model *= transform3D::Scale(glm::vec3(0.25f));
+
     RenderMesh(meshes["cube"], shaders["VertexColor"], model, view, projection);
     // TODO(student): Disable face culling
-
+    glDisable(GL_CULL_FACE);
     DrawCoordinateSystem(view, projection);
 }
 
