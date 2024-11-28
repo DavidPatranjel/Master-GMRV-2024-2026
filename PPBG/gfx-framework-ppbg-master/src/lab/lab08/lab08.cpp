@@ -44,6 +44,16 @@ void Lab08::Init()
     }
 
     {
+        Texture2D* texture = LoadTexture("src\\lab\\lab07\\images\\snow.png");
+        mapTextures["show"] = texture;
+    }
+
+    {
+        Texture2D* texture = LoadTexture("src\\lab\\lab07\\images\\water.png");
+        mapTextures["water"] = texture;
+    }
+
+    {
         Texture2D* texture = LoadTexture("src\\lab\\lab08\\images\\noise.png");
         mapTextures["noise"] = texture;
     }
@@ -121,6 +131,7 @@ void Lab08::Init()
     LoadShader("LabShader");
     LoadShader("Ex3");
     LoadShader("Ex4");
+    LoadShader("Ex5");
 }
 
 Texture2D* Lab08::LoadTexture(const char* imagePath)
@@ -277,7 +288,7 @@ void Lab08::Update(float deltaTimeSeconds)
         glm::mat4 modelMatrix = glm::mat4(1);
         modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0.1, -15));
         modelMatrix = glm::scale(modelMatrix, glm::vec3(0.3f));
-        RenderSimpleMesh(meshes["plane"], shaders["LabShader"], modelMatrix, mapTextures["ground"], mapTextures["noise"]);
+        RenderSimpleMesh(meshes["plane"], shaders["Ex5"], modelMatrix, mapTextures["ground"], mapTextures["noise"]);
     }
 }
 

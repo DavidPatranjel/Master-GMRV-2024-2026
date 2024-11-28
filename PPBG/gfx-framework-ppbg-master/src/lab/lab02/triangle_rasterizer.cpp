@@ -64,7 +64,7 @@ bool TriangleRasterizer::CheckPointInsideTriangle(
     const VertexFormat &v2,
     const VertexFormat &v3)
 {
-    const float EPSILON = 5.0f;
+    const float EPSILON = 5;
 
     // TODO(student): Ex. 1
     float area1 = ComputeTriangleArea(v1.position, v2.position, p);

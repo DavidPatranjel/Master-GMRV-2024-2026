@@ -76,7 +76,7 @@ namespace transform3D
         return glm::transpose(
             glm::mat4(xi, 0, 0, 0,
                 0, yi, 0, 0,
-                0, 0, c1, c2,
+                0, 0, c2, c1,
                 0, 0, -1, 0)
         );
     }

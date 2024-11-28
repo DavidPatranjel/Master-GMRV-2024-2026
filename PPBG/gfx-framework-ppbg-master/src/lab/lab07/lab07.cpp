@@ -234,7 +234,7 @@ void Lab07::RenderSimpleMesh(Mesh *mesh, Shader *shader, const glm::mat4 & model
     glm::vec3 material_ka = object_color;
     glm::vec3 material_kd = object_color;
     glm::vec3 material_ks = object_color;
-    int material_shininess = 30;
+    int material_shininess = 20;
     // TODO(student): Set material property uniforms (shininess, ka, kd, ks)
     GLint kapos = glGetUniformLocation(shader->program, "material_ka");
     glUniform3f(kapos, material_ka.x, material_ka.y, material_ka.z);

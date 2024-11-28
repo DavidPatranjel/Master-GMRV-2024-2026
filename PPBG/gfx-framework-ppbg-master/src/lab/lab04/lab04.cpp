@@ -22,7 +22,7 @@ void Lab04::Initialize()
     GetCameraInput()->SetActive(true);
 
     Camera *camera = GetSceneCamera();
-    camera->SetPositionAndRotation(glm::vec3(0, 1, 0), glm::quatLookAt(glm::vec3 (0, 0, -1), glm::vec3 (0, 1, 0)));
+    camera->SetPositionAndRotation(glm::vec3(0, 1, 0), glm::quatLookAt(glm::vec3(0, 0, -1), glm::vec3(0, 1, 0)));
     camera->Update();
     camera_position = camera->m_transform->GetWorldPosition();
     camera_forward = camera->m_transform->GetLocalOZVector();
@@ -36,6 +36,7 @@ void Lab04::Initialize()
     image->Init(1280, 720, 3 /* channels */);
     depthImage->Init(1280, 720);
 
+    //DrawCube();
     DrawTetrahedron();
 }
 
@@ -117,6 +118,7 @@ glm::mat4 Lab04::ModelTransformation()
     transformation *= transform3D::RotateOZ(glm::radians(45.0f));
     transformation *= transform3D::RotateOY(glm::radians(45.0f));
     transformation *= transform3D::RotateOX(glm::radians(185.0f));
+    //transformation *= transform3D::RotateOX(glm::radians(45.0f));
     transformation *= transform3D::Scale(1.25f, 1.25f, 1.25f);
 
     return transformation;

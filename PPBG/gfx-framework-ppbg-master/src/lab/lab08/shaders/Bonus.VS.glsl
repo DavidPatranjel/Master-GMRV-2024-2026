@@ -10,15 +10,14 @@ layout(location = 3) in vec3 v_color;
 uniform mat4 Model;
 uniform mat4 View;
 uniform mat4 Projection;
-uniform float Time;
+
 // Output
 out vec2 texture_coord;
 
 
 void main()
 {
-	float speed = 0.1; 
-	float coord_x_translated = mod(v_texture_coord.x + Time * speed, 1.0);
-    texture_coord = vec2(coord_x_translated, v_texture_coord.y);
+
+    texture_coord = v_texture_coord;
     gl_Position = Projection * View * Model * vec4(v_position, 1.0);
 }
