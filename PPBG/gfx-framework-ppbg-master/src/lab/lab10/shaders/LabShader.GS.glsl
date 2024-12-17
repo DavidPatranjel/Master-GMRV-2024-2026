@@ -23,6 +23,29 @@ void main()
 	//   - The coordinate of the vertex in clip space, transformed
 	//     from world space, as received from the vertex shader
 	//   - Texture coordinate received from the vertex shader.
+	for(int i = 0; i < 5; i++)
+	{
+		vec3 offset = i * vec3(1.0, 0.0, 0.0);
 
+		vec4 w_pos = gl_in[0].gl_Position;
+		w_pos.xyz += offset;
+		gl_Position = Projection * View * w_pos;
+		texture_coord = v_texture_coord[0];
+		EmitVertex();
+ 
+		w_pos = gl_in[1].gl_Position;
+		w_pos.xyz += offset;
+		gl_Position = Projection * View *w_pos;
+		texture_coord = v_texture_coord[1];
+		EmitVertex();
 
+		w_pos = gl_in[2].gl_Position;
+		w_pos.xyz += offset;
+		gl_Position = Projection * View * w_pos;
+		texture_coord = v_texture_coord[2];
+		EmitVertex();
+    
+		// End the primitive
+		EndPrimitive();
+	}
 }

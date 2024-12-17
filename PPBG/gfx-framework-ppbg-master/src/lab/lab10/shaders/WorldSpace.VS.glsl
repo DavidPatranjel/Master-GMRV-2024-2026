@@ -9,13 +9,13 @@ layout(location = 2) in vec2 v_texture_coord;
 uniform mat4 Model;
 
 // Output
-layout(location = 0) out vec3 normal;
+layout(location = 2) out vec4 normal_point;
 layout(location = 1) out vec2 texture_coord;
 
 void main()
 {
     texture_coord = v_texture_coord;
-    normal = mat3(Model) * v_normal;
+    normal_point = Model * vec4(4 * v_normal + v_position, 1);
 
     gl_Position = Model * vec4(v_position, 1);
 }

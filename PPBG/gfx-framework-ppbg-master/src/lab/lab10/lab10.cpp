@@ -64,6 +64,8 @@ void Lab10::Init()
     // TODO(student): Load other shaders. You can reuse a file for a
     // certain type of shader for several programs.
     LoadShader("LabShader", "WorldSpace", "Texture", "LabShader");
+    LoadShader("AnimationShader", "WorldSpace", "Texture", "AnimationShader");
+    LoadShader("NormalsShader", "WorldSpace", "Color", "NormalsShader");
     LoadShader("Triangle", "WorldSpace", "Color", "Triangle");
 }
 
@@ -85,7 +87,7 @@ void Lab10::Update(float deltaTimeSeconds)
         glm::mat4 modelMatrix = glm::mat4(1);
         modelMatrix = glm::translate(modelMatrix, glm::vec3(-2, 0, 2));
         modelMatrix = glm::scale(modelMatrix, glm::vec3(0.01));
-        RenderSimpleMesh(meshes["archer"], shaders["LabShader"], modelMatrix, mapTextures["archer"]);
+        RenderSimpleMesh(meshes["archer"], shaders["AnimationShader"], modelMatrix, mapTextures["archer"]);
     }
 
     {
@@ -97,9 +99,16 @@ void Lab10::Update(float deltaTimeSeconds)
 
     {
         glm::mat4 modelMatrix = glm::mat4(1);
+        modelMatrix = glm::translate(modelMatrix, glm::vec3(2, 0, 2));
+        modelMatrix = glm::scale(modelMatrix, glm::vec3(0.01));
+        RenderSimpleMesh(meshes["archer"], shaders["NormalsShader"], modelMatrix, mapTextures["archer"]);
+    }
+
+    {
+        glm::mat4 modelMatrix = glm::mat4(1);
         modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 1, 1));
         modelMatrix = glm::scale(modelMatrix, glm::vec3(0.5));
-        RenderSimpleMesh(meshes["triangle"], shaders["LabShader"], modelMatrix);
+        RenderSimpleMesh(meshes["triangle"], shaders["Triangle"], modelMatrix);
     }
 }
 
@@ -133,7 +142,9 @@ void Lab10::RenderSimpleMesh(Mesh* mesh, Shader* shader, const glm::mat4& modelM
     glUniformMatrix4fv(loc_projection_matrix, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 
     // TODO(student): Set any other shader uniforms that you need
-
+    GLint timeLoc = glGetUniformLocation(shader->program, "Time");
+    float elapsedTime = Engine::GetElapsedTime();
+    glUniform1f(timeLoc, elapsedTime);
     if (texture) {
         glActiveTexture(GL_TEXTURE0);
 

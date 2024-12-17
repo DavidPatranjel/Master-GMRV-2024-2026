@@ -12,6 +12,9 @@ layout(location = 0) out vec4 out_color;
 void main()
 {
     // TODO(student): Apply the texture
-
-    out_color = vec4(1, 0, 0, 1);
+    vec4 color = texture2D(texture_1, texture_coord);
+    if(color.a < 0.3) {
+        discard;
+    }
+    out_color = color;
 }

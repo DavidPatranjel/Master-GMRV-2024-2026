@@ -16,6 +16,7 @@ uniform sampler2D texture_2;
 // Output
 out vec2 texture_coord;
 
+
 void main()
 {
     texture_coord = v_texture_coord;
